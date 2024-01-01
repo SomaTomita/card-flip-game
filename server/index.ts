@@ -1,5 +1,7 @@
-import cors from "cors";
-import express, { Application, Request, Response } from "express";
+import express, { Application } from 'express';
+import cors from 'cors';
+import { sequelize } from './config/db.config';
+import cardRoutes from './routes/card.routes';
 
 const app: Application = express();
 const PORT = 3000;
@@ -7,13 +9,23 @@ const PORT = 3000;
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.use('/api', cardRoutes);
 
 
-app.get('/', (req: Request, res: Response) => {
-  console.log("getリクエストを受け付けました。");
-  return res.status(200).json({ message: "hello world" });
-})
+async function startServer() {
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+    
+    await sequelize.sync();
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+    
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
+
+startServer();
