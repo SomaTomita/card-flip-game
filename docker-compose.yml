@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  mysql:
+    container_name: db
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - cardflipgame-db-volume:/var/lib/mysql
+    restart: always
+    environment:
+      TZ: Asia/Tokyo
+      MYSQL_DATABASE: main
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping" ]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cardflipgame-db-volume:
+    name: cardflipgame-db-volume
