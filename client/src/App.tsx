@@ -1,17 +1,12 @@
-import axios from "axios";
-import { useEffect } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import MainPage from "./components/MainPage";
 
-export default function Home() {
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000")  // ローカルのバックエンドサーバーのURLにgetメソッドでアクセス
-      .then((response) => {
-        console.log(response.data.message)
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-  }, []);
-
-  return <div></div>;
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+      </Routes>
+    </Router>
+  );
 }
