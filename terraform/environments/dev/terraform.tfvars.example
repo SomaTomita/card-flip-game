@@ -1,0 +1,14 @@
+project_name = "cardflip"
+environment  = "dev"
+aws_region   = "ap-northeast-1"
+
+# Cloudflare
+# cloudflare_api_token  = "..." # 環境変数 TF_VAR_cloudflare_api_token で設定推奨
+# cloudflare_account_id = "..."
+github_owner = "soma"
+github_repo  = "card-flip-game"
+
+# Cognito / CORS
+cognito_callback_urls = ["http://localhost:5173"]
+cognito_logout_urls   = ["http://localhost:5173"]
+cors_allowed_origins  = ["http://localhost:5173"]

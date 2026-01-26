@@ -1,12 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import MainPage from "./components/MainPage";
+import CardGame from './components/CardGame';
 
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-      </Routes>
-    </Router>
-  );
+function App() {
+  return <CardGame />;
 }
+
+export default App;
