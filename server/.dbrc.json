@@ -1,0 +1,5 @@
+{
+  "migrationsDir": "db/migrations",
+  "seedersDir": "db/seeders",
+  "configPath": "src/config/dynamodb.ts"
+}

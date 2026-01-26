@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+build/
 
 # Environment files
 .env
@@ -25,6 +26,18 @@ logs/
 *.log
 npm-debug.log*
 
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfplan
+terraform/.terraform.lock.hcl
+
+# Lambda deployment
+.serverless/
+.aws-sam/
+packaged.yaml
+
 # Coverage
 coverage/
 
@@ -32,12 +45,3 @@ coverage/
 tmp/
 temp/
 *.tmp
-
-# Lambda deployment
-.serverless/
-.aws-sam/
-packaged.yaml
-
-# Lock files (keep package-lock.json)
-yarn.lock
-pnpm-lock.yaml

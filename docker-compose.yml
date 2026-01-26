@@ -1,24 +1,35 @@
-version: '3'
+version: "3.8"
 
 services:
-  mysql:
-    container_name: db
-    image: mysql:latest
+  dynamodb-local:
+    container_name: cardflip-dynamodb
+    image: amazon/dynamodb-local:latest
     ports:
-      - 3306:3306
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /data"
     volumes:
-      - cardflipgame-db-volume:/var/lib/mysql
-    restart: always
-    environment:
-      TZ: Asia/Tokyo
-      MYSQL_DATABASE: main
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      - dynamodb-data:/data
+    restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping" ]
-      interval: 30s
+      test: ["CMD-SHELL", "curl -s http://localhost:8000 || exit 1"]
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
+
+  dynamodb-admin:
+    container_name: cardflip-dynamodb-admin
+    image: aaronshaf/dynamodb-admin:latest
+    ports:
+      - "8001:8001"
+    environment:
+      DYNAMO_ENDPOINT: http://dynamodb-local:8000
+      AWS_REGION: ap-northeast-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    depends_on:
+      - dynamodb-local
+    restart: unless-stopped
 
 volumes:
-  cardflipgame-db-volume:
-    name: cardflipgame-db-volume
+  dynamodb-data:
+    name: cardflip-dynamodb-data
