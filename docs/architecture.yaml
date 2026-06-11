@@ -1,0 +1,154 @@
+# Card Flip Game - AWS Infrastructure Diagram
+# Generate: awsdac architecture.yaml -o architecture.png
+
+Diagram:
+  DefinitionFiles:
+    - Type: URL
+      Url: "https://raw.githubusercontent.com/awslabs/diagram-as-code/main/definitions/definition-for-aws-icons-light.yaml"
+
+  Resources:
+    Canvas:
+      Type: AWS::Diagram::Canvas
+      Direction: vertical
+      Children:
+        - Users
+        - AWSCloud
+
+    # --------------------------------------------------------
+    # Users (top)
+    # --------------------------------------------------------
+    Users:
+      Type: AWS::Diagram::Resource
+      Preset: User
+      Title: Users
+
+    # --------------------------------------------------------
+    # AWS Cloud
+    # --------------------------------------------------------
+    AWSCloud:
+      Type: AWS::Diagram::Cloud
+      Direction: vertical
+      Preset: AWSCloudNoLogo
+      Align: center
+      Children:
+        - FrontendBackendRow
+        - LambdaRow
+        - DataRow
+
+    # --------------------------------------------------------
+    # Row 1: CDN (left) + API Gateway (right)
+    # --------------------------------------------------------
+    FrontendBackendRow:
+      Type: AWS::Diagram::HorizontalStack
+      Children:
+        - CloudFrontCDN
+        - APIGateway
+
+    CloudFrontCDN:
+      Type: AWS::Diagram::Resource
+      Preset: Amazon CloudFront
+      Title: Cloudflare Pages (CDN)
+
+    APIGateway:
+      Type: AWS::Diagram::Resource
+      Preset: Amazon API Gateway
+      Title: API Gateway v2 (HTTP)
+
+    # --------------------------------------------------------
+    # Row 2: Lambda (center)
+    # --------------------------------------------------------
+    LambdaRow:
+      Type: AWS::Diagram::HorizontalStack
+      Align: center
+      Children:
+        - LambdaFunction
+
+    LambdaFunction:
+      Type: AWS::Diagram::Resource
+      Preset: AWS Lambda
+      Title: Lambda (Express.js)
+
+    # --------------------------------------------------------
+    # Row 3: DynamoDB (left) + CloudWatch (center) + Cognito (right)
+    # --------------------------------------------------------
+    DataRow:
+      Type: AWS::Diagram::HorizontalStack
+      Children:
+        - DynamoDBTable
+        - CloudWatchLogs
+        - CognitoAuth
+
+    DynamoDBTable:
+      Type: AWS::Diagram::Resource
+      Preset: Amazon DynamoDB
+      Title: DynamoDB (cards)
+
+    CloudWatchLogs:
+      Type: AWS::Diagram::Resource
+      Preset: Amazon CloudWatch
+      Title: CloudWatch Logs
+
+    CognitoAuth:
+      Type: AWS::Diagram::Resource
+      Preset: Amazon Cognito
+      Title: Cognito User Pool
+
+  # --------------------------------------------------------
+  # Links
+  # --------------------------------------------------------
+  Links:
+    # User -> Cloudflare Pages (left)
+    - Source: Users
+      SourcePosition: SSW
+      Target: CloudFrontCDN
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+
+    # User -> API Gateway (right)
+    - Source: Users
+      SourcePosition: SSE
+      Target: APIGateway
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+
+    # API Gateway -> Lambda
+    - Source: APIGateway
+      SourcePosition: S
+      Target: LambdaFunction
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+
+    # Lambda -> DynamoDB
+    - Source: LambdaFunction
+      SourcePosition: SSW
+      Target: DynamoDBTable
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+
+    # Lambda -> CloudWatch Logs
+    - Source: LambdaFunction
+      SourcePosition: S
+      Target: CloudWatchLogs
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+
+    # Lambda -> Cognito
+    - Source: LambdaFunction
+      SourcePosition: SSE
+      Target: CognitoAuth
+      TargetPosition: N
+      TargetArrowHead:
+        Type: Open
+
+    # API Gateway -> CloudWatch Logs
+    - Source: APIGateway
+      SourcePosition: SSW
+      Target: CloudWatchLogs
+      TargetPosition: NNE
+      TargetArrowHead:
+        Type: Open
