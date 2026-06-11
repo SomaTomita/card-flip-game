@@ -1,4 +1,4 @@
-.PHONY: setup-local dev-server dev-client deploy-server tf-bootstrap tf-plan tf-apply clean
+.PHONY: setup-local dev-server dev-client deploy-server tf-bootstrap tf-plan tf-apply tf-destroy clean
 
 # ----------------------------------------------------------
 # Local Development
@@ -41,6 +41,10 @@ tf-apply: ## Terraform apply for dev environment
 	cd terraform/environments/dev && \
 		terraform init && \
 		terraform apply
+
+tf-destroy: ## Destroy dev environment resources (NOT the state backend; see README Teardown)
+	cd terraform/environments/dev && \
+		terraform destroy
 
 # ----------------------------------------------------------
 # Cleanup
