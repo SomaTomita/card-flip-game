@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   dynamodb-local:
     container_name: cardflip-dynamodb
@@ -10,11 +8,20 @@ services:
     volumes:
       - dynamodb-data:/data
     restart: unless-stopped
+    networks:
+      - cardflip-network
     healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:8000 || exit 1"]
+      # DynamoDB Local 2.x returns 400 to unauthenticated requests when healthy
+      # (the /shell/ web console was removed in 2.x)
+      test:
+        [
+          "CMD-SHELL",
+          "[ \"$$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8000)\" = \"400\" ] || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
+      start_period: 5s
 
   dynamodb-admin:
     container_name: cardflip-dynamodb-admin
@@ -27,9 +34,17 @@ services:
       AWS_ACCESS_KEY_ID: local
       AWS_SECRET_ACCESS_KEY: local
     depends_on:
-      - dynamodb-local
+      dynamodb-local:
+        condition: service_healthy
     restart: unless-stopped
+    networks:
+      - cardflip-network
 
 volumes:
   dynamodb-data:
     name: cardflip-dynamodb-data
+
+networks:
+  cardflip-network:
+    name: cardflip-network
+    driver: bridge
