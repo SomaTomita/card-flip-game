@@ -36,7 +36,10 @@ class DynamoDBConfig {
       // Detect the Lambda runtime via AWS_LAMBDA_FUNCTION_NAME (always set by Lambda).
       // NODE_ENV is the environment name (dev/staging/prod), NOT a local-vs-cloud signal,
       // so relying on it made the deployed Lambda try to reach http://localhost:8000.
-      const isLocal = !process.env.AWS_LAMBDA_FUNCTION_NAME;
+      // DYNAMODB_TARGET=aws lets a local script (e.g. seeding prod) target real DynamoDB.
+      const isLambda = !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+      const targetsAws = process.env.DYNAMODB_TARGET === 'aws';
+      const isLocal = !isLambda && !targetsAws;
 
       this.rawInstance = new DynamoDBClient({
         region: process.env.APP_AWS_REGION || process.env.AWS_REGION || 'ap-northeast-1',

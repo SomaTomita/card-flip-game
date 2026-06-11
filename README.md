@@ -173,6 +173,14 @@ make deploy-server
 
 This builds the TypeScript server, packages it as a zip, and updates the Lambda function.
 
+### 3b. Seed the deployed database (optional)
+
+```bash
+make seed-prod
+```
+
+Seeds the deployed DynamoDB cards table using your AWS credentials. `DYNAMODB_TARGET=aws` makes the seed script target real DynamoDB instead of the local container. The local `npm run db:seed` is unaffected and still targets `localhost:8000`.
+
 ### 4. Frontend
 
 The frontend deploys automatically via Cloudflare Pages GitHub integration when you push to `main`. Preview deployments are triggered on `dev` and `staging` branches.
@@ -215,6 +223,7 @@ make setup-local      # Start Docker + run migrations + seed data
 make dev-server       # Start server in dev mode
 make dev-client       # Start client in dev mode
 make deploy-server    # Build & deploy Lambda function code
+make seed-prod        # Seed the deployed (AWS) DynamoDB cards table
 make tf-bootstrap     # Create S3/DynamoDB for Terraform state (one-time)
 make tf-plan          # Terraform plan for dev environment
 make tf-apply         # Terraform apply for dev environment
