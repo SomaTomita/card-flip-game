@@ -177,6 +177,37 @@ This builds the TypeScript server, packages it as a zip, and updates the Lambda 
 
 The frontend deploys automatically via Cloudflare Pages GitHub integration when you push to `main`. Preview deployments are triggered on `dev` and `staging` branches.
 
+## Teardown (Destroy Everything)
+
+Destroy in the **reverse order** of creation: the dev environment first, then the state backend. Destroying the backend first would delete the S3 bucket that holds the dev state and orphan those resources.
+
+> `make clean` only stops Docker and removes local build artifacts — it does **not** touch any cloud resources.
+
+### 1. Destroy the dev environment
+
+```bash
+make tf-destroy
+```
+
+Runs `terraform destroy` in `terraform/environments/dev`, removing all AWS resources (DynamoDB, Cognito, Lambda, API Gateway, CloudWatch logs) and the Cloudflare Pages project. Run it in a shell where `TF_VAR_cloudflare_api_token` is set.
+
+### 2. Destroy the state backend (bootstrap)
+
+The bootstrap S3 bucket is intentionally guarded, so `terraform destroy` fails until you relax two settings in `terraform/bootstrap/main.tf`:
+
+- Add `force_destroy = true` to the `aws_s3_bucket.terraform_state` resource — a versioned bucket cannot be deleted while it still holds state-file versions.
+- Comment out (or set to `false`) `prevent_destroy = true` in its `lifecycle` block.
+
+Then:
+
+```bash
+cd terraform/bootstrap && terraform destroy
+```
+
+The bootstrap state is local (`terraform/bootstrap/terraform.tfstate`); remove that file afterward if you want a fully clean slate.
+
+> **Cost note:** idle cost is near zero (DynamoDB on-demand, an S3 state bucket, and Lambda billed per invocation), so there is no urgency to tear down unless you want a clean slate.
+
 ## Make Targets
 
 ```bash
@@ -187,6 +218,7 @@ make deploy-server    # Build & deploy Lambda function code
 make tf-bootstrap     # Create S3/DynamoDB for Terraform state (one-time)
 make tf-plan          # Terraform plan for dev environment
 make tf-apply         # Terraform apply for dev environment
+make tf-destroy       # Destroy dev environment (not the state backend)
 make clean            # Stop Docker, remove build artifacts
 ```
 
