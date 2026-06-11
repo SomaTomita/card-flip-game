@@ -7,7 +7,7 @@
     "dev": "ts-node src/local.ts",
     "build": "tsc",
     "start": "node dist/local.js",
-    "lint": "eslint src/**/*.ts",
+    "lint": "eslint src db --ext .ts",
     "format": "prettier --write \"src/**/*.ts\" \"db/**/*.ts\"",
     "db:migrate": "ts-node db/cli.ts migrate",
     "db:seed": "ts-node db/cli.ts seed",

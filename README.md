@@ -4,6 +4,8 @@ A party card game (Oogiri-style) with card flip animations. Built as a serverles
 
 ## Architecture
 
+![Architecture diagram](docs/architecture.png)
+
 ```
 Users
  ├── Cloudflare Pages ── React SPA (Vite + TypeScript)
@@ -14,11 +16,7 @@ Users
 CloudWatch ← Lambda & API Gateway access logs
 ```
 
-Generate the architecture diagram:
-
-```bash
-awsdac docs/architecture.yaml -o docs/architecture.png
-```
+The diagram is generated from `docs/architecture.yaml` (see [Updating the Architecture Diagram](#updating-the-architecture-diagram)).
 
 ### Tech Stack
 
