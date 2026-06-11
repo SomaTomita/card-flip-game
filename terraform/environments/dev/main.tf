@@ -15,6 +15,15 @@ terraform {
       version = "~> 2.0"
     }
   }
+
+  # Uncomment after running: make tf-bootstrap
+  # backend "s3" {
+  #   bucket         = "cardflip-terraform-state"
+  #   key            = "dev/terraform.tfstate"
+  #   region         = "ap-northeast-1"
+  #   dynamodb_table = "cardflip-terraform-lock"
+  #   encrypt        = true
+  # }
 }
 
 provider "aws" {
@@ -75,7 +84,6 @@ module "frontend" {
   environment  = var.environment
   project_name = var.project_name
   account_id   = var.cloudflare_account_id
-  api_token    = var.cloudflare_api_token
   api_endpoint = module.backend.api_endpoint
   github_owner = var.github_owner
   github_repo  = var.github_repo

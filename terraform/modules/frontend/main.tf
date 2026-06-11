@@ -1,10 +1,41 @@
-variable "environment" { type = string }
-variable "project_name" { type = string }
-variable "account_id" { type = string }
-variable "api_token" { type = string }
-variable "api_endpoint" { type = string }
-variable "github_owner" { type = string }
-variable "github_repo" { type = string }
+variable "environment" {
+  description = "Deployment environment (dev, staging, prod)"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name used as resource name prefix"
+  type        = string
+}
+
+variable "account_id" {
+  description = "Cloudflare account ID"
+  type        = string
+}
+
+variable "api_endpoint" {
+  description = "Backend API endpoint URL to inject as VITE_API_URL"
+  type        = string
+}
+
+variable "github_owner" {
+  description = "GitHub repository owner"
+  type        = string
+}
+
+variable "github_repo" {
+  description = "GitHub repository name"
+  type        = string
+}
+
+terraform {
+  required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
+  }
+}
 
 resource "cloudflare_pages_project" "frontend" {
   account_id        = var.account_id
@@ -47,4 +78,7 @@ resource "cloudflare_pages_project" "frontend" {
   }
 }
 
-output "pages_url" { value = "https://${cloudflare_pages_project.frontend.subdomain}.pages.dev" }
+output "pages_url" {
+  description = "Cloudflare Pages deployment URL"
+  value       = "https://${cloudflare_pages_project.frontend.subdomain}.pages.dev"
+}

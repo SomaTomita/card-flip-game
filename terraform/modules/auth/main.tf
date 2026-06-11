@@ -1,7 +1,31 @@
-variable "environment" { type = string }
-variable "project_name" { type = string }
-variable "callback_urls" { type = list(string) }
-variable "logout_urls" { type = list(string) }
+variable "environment" {
+  description = "Deployment environment (dev, staging, prod)"
+  type        = string
+}
+
+variable "project_name" {
+  description = "Project name used as resource name prefix"
+  type        = string
+}
+
+variable "callback_urls" {
+  description = "List of allowed OAuth callback URLs"
+  type        = list(string)
+}
+
+variable "logout_urls" {
+  description = "List of allowed OAuth logout URLs"
+  type        = list(string)
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
 
 resource "aws_cognito_user_pool" "main" {
   name = "${var.project_name}-${var.environment}-users"
@@ -25,10 +49,10 @@ resource "aws_cognito_user_pool" "main" {
   }
 
   schema {
-    name                     = "nickname"
-    attribute_data_type      = "String"
-    mutable                  = true
-    required                 = false
+    name                = "nickname"
+    attribute_data_type = "String"
+    mutable             = true
+    required            = false
     string_attribute_constraints {
       min_length = 1
       max_length = 50
@@ -67,11 +91,11 @@ resource "aws_cognito_user_pool_client" "web" {
     "ALLOW_USER_PASSWORD_AUTH"
   ]
 
-  supported_identity_providers = ["COGNITO"]
-  callback_urls                = var.callback_urls
-  logout_urls                  = var.logout_urls
-  allowed_oauth_flows          = ["code", "implicit"]
-  allowed_oauth_scopes         = ["email", "openid", "profile"]
+  supported_identity_providers         = ["COGNITO"]
+  callback_urls                        = var.callback_urls
+  logout_urls                          = var.logout_urls
+  allowed_oauth_flows                  = ["code", "implicit"]
+  allowed_oauth_scopes                 = ["email", "openid", "profile"]
   allowed_oauth_flows_user_pool_client = true
 
   prevent_user_existence_errors = "ENABLED"
@@ -81,5 +105,12 @@ resource "aws_cognito_user_pool_client" "web" {
   write_attributes = ["email", "nickname"]
 }
 
-output "user_pool_id" { value = aws_cognito_user_pool.main.id }
-output "client_id" { value = aws_cognito_user_pool_client.web.id }
+output "user_pool_id" {
+  description = "Cognito User Pool ID"
+  value       = aws_cognito_user_pool.main.id
+}
+
+output "client_id" {
+  description = "Cognito User Pool Client ID"
+  value       = aws_cognito_user_pool_client.web.id
+}

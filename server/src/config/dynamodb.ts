@@ -36,7 +36,7 @@ class DynamoDBConfig {
       const isLocal = process.env.NODE_ENV !== 'production';
 
       this.rawInstance = new DynamoDBClient({
-        region: process.env.AWS_REGION || 'ap-northeast-1',
+        region: process.env.APP_AWS_REGION || process.env.AWS_REGION || 'ap-northeast-1',
         ...(isLocal && {
           endpoint: process.env.DYNAMODB_ENDPOINT || 'http://localhost:8000',
           credentials: {
