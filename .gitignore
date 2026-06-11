@@ -27,11 +27,15 @@ logs/
 npm-debug.log*
 
 # Terraform
-terraform/.terraform/
-terraform/*.tfstate
-terraform/*.tfstate.backup
-terraform/*.tfplan
-terraform/.terraform.lock.hcl
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.backup
+**/*.tfplan
+# .terraform.lock.hcl is NOT ignored (commit per HashiCorp recommendation)
+**/*.tfvars
+!**/*.tfvars.example
+**/lambda_dummy.zip
+**/.tmp/
 
 # Lambda deployment
 .serverless/
