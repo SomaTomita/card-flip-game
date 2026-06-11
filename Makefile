@@ -1,4 +1,4 @@
-.PHONY: setup-local dev-server dev-client deploy-server tf-bootstrap tf-plan tf-apply tf-destroy clean
+.PHONY: setup-local dev-server dev-client deploy-server seed-prod tf-bootstrap tf-plan tf-apply tf-destroy clean
 
 # ----------------------------------------------------------
 # Local Development
@@ -22,6 +22,9 @@ dev-client: ## Start client in dev mode
 
 deploy-server: ## Build & deploy Lambda function code
 	./scripts/deploy-lambda.sh
+
+seed-prod: ## Seed the deployed (AWS) DynamoDB cards table — uses your AWS credentials
+	cd server && DYNAMODB_TARGET=aws DYNAMODB_TABLE_PREFIX=cardflip_dev_ npm run db:seed
 
 # ----------------------------------------------------------
 # Terraform
