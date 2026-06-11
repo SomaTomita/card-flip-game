@@ -66,13 +66,15 @@ resource "cloudflare_pages_project" "frontend" {
     production {
       environment_variables = {
         NODE_VERSION = "20"
-        VITE_API_URL = var.api_endpoint
+        # client axios baseURL expects the full cards collection path (client.get('/'))
+        VITE_API_URL = "${var.api_endpoint}/api/cards"
       }
     }
     preview {
       environment_variables = {
         NODE_VERSION = "20"
-        VITE_API_URL = var.api_endpoint
+        # client axios baseURL expects the full cards collection path (client.get('/'))
+        VITE_API_URL = "${var.api_endpoint}/api/cards"
       }
     }
   }
