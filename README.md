@@ -2,6 +2,14 @@
 
 A party card game (Oogiri-style) with card flip animations. Built as a serverless full-stack application on AWS with a React frontend hosted on Cloudflare Pages.
 
+## Screenshots
+
+Tap the card to flip it: a random お題 (Oogiri prompt) appears with its category and difficulty, and a 10-second countdown bar runs down while players answer. Hit **NEXT CARD** for the next prompt until every topic has been used.
+
+| Start screen | In-game topic card |
+|:---:|:---:|
+| ![Start screen — tap to flip the card](docs/screenshots/start.png) | ![Flipped topic card with category, difficulty badge, and countdown timer](docs/screenshots/topic-card.png) |
+
 ## Architecture
 
 ![Architecture diagram](docs/architecture.png)
